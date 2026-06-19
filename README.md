@@ -10,6 +10,41 @@ The main business question of this project is:
 
 This project uses customer and campaign data to predict the probability that each customer will respond to a campaign. The goal is not only to build an accurate machine learning model, but also to translate model outputs into commercial decisions such as customer ranking, outreach prioritization, and campaign resource allocation.
 
+## Dataset
+
+This project uses the UCI Bank Marketing Dataset, a real-world dataset related to direct marketing campaigns conducted by a Portuguese banking institution.
+
+The dataset contains customer demographic information, previous campaign information, contact history, and economic context variables. The main objective is to predict whether a customer subscribed to a term deposit after a marketing campaign.
+
+### Dataset Source
+
+- Source: UCI Machine Learning Repository
+- Dataset: Bank Marketing Dataset
+- Selected file: bank-additional-full.csv
+- Number of records: 41,188
+- Target variable: y
+
+### Target Variable
+
+The target variable is:
+
+**y = whether the customer subscribed to a term deposit**
+
+This project treats `y` as the campaign-response outcome:
+
+- `yes` = customer responded positively to the campaign
+- `no` = customer did not respond positively to the campaign
+
+For modeling, this target will be converted into a binary response variable:
+
+- `1` = subscribed / positive response
+- `0` = not subscribed / negative response
+
+### Dataset Citation
+
+
+Moro, S., Rita, P., & Cortez, P. (2014). Bank Marketing [Dataset]. UCI Machine Learning Repository. https://doi.org/10.24432/C5K306
+
 ## Business Objective
 
 The objective is to build a decision-support analytics framework that helps a business:
