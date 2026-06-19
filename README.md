@@ -34,6 +34,7 @@ The objective is to build a decision-support analytics framework that helps a bu
 9. Create outreach priority segments
 10. Translate results into business recommendations
 
+
 ## Target Variable
 
 The target variable is campaign response:
