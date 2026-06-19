@@ -42,7 +42,7 @@ The target variable is campaign response:
 - `response = 1`: customer responded to the campaign
 - `response = 0`: customer did not respond
 
-This is a binary classification problem, but the business value comes from ranking customers and prioritizing outreach actions.
+ This is a binary classification problem, but the business value comes from ranking customers and prioritizing outreach actions.
 
 ## Commercial Decision Focus
 
