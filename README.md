@@ -45,6 +45,26 @@ For modeling, this target will be converted into a binary response variable:
 
 Moro, S., Rita, P., & Cortez, P. (2014). Bank Marketing [Dataset]. UCI Machine Learning Repository. https://doi.org/10.24432/C5K306
 
+## Step 3: Data Understanding
+
+After loading the UCI Bank Marketing Dataset, the project performs an initial data understanding analysis to connect the raw data to the commercial campaign objective.
+
+This step examines:
+
+- Number of customer records
+- Overall campaign response rate
+- Numerical and categorical variables
+- Missing and `"unknown"` values
+- Campaign-related variables
+- Previous campaign outcomes
+- Response differences across customer groups
+- Response differences across contact types
+- Relationship between repeated contacts and customer response
+
+The main business goal of this step is to understand which customer and campaign characteristics are associated with higher response rates before building predictive models.
+
+
+
 ## Business Objective
 
 The objective is to build a decision-support analytics framework that helps a business:
