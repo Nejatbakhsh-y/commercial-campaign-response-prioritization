@@ -1,0 +1,11 @@
+feature,importance_mean,importance_std,business_interpretation
+nr.employed,0.05155931588754189,0.004271808806127913,Number of employees captures labor-market conditions that may influence customer response.
+euribor3m,0.018379625807821088,0.0037103377041199535,Euribor rate captures interest-rate conditions that may affect deposit product attractiveness.
+month,0.011985876397471585,0.0021140217325748578,Campaign timing may influence response due to seasonal or business-cycle effects.
+contact,0.009526820250955238,0.0031684936685025078,Contact type may influence customer accessibility and campaign effectiveness.
+cons.conf.idx,0.00943675114392184,0.0024070240237886206,Consumer confidence index captures customer sentiment and economic confidence.
+pdays,0.005109512830793928,0.001540420721611215,Days since previous contact may indicate the effect of recency on customer response.
+poutcome,0.0033073051794895838,0.0010517316078191231,Previous campaign outcome helps identify whether prior marketing success affects current response likelihood.
+age,0.0026553360417944315,0.0011370559398748577,Age can capture lifecycle differences that affect campaign response.
+day_of_week,0.0019493401811405797,0.0007952161449785752,Day of contact may affect customer availability and campaign performance.
+campaign,0.0018062909807066373,0.001021865025277985,Number of campaign contacts may indicate whether additional outreach improves or reduces response likelihood.
