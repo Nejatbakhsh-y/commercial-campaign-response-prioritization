@@ -99,11 +99,50 @@ This project trains three baseline machine learning models to predict customer c
 | Random Forest | Nonlinear model for complex customer behavior |
 | Gradient Boosting | Strong predictive model for campaign response prediction |
 
-The models are evaluated using accuracy, precision, recall, F1 score, ROC AUC, and PR AUC.
+The models are first trained as baseline classifiers and then evaluated in Step 7 using both machine learning metrics and commercial targeting metrics.
 
 Because campaign response is an imbalanced classification problem, the project emphasizes ROC AUC and PR AUC rather than accuracy alone. These metrics are more useful for ranking customers by likelihood of response and supporting commercial outreach prioritization.
 
 The recommended final model candidate is selected based on predictive performance and business usefulness. In this type of commercial analytics problem, Random Forest or Gradient Boosting is usually preferred because they can capture nonlinear response patterns.
+
+## Model Performance Evaluation
+
+The trained models are evaluated using both standard machine learning metrics and commercial analytics metrics.
+
+Standard model evaluation metrics include:
+
+- ROC-AUC
+- Accuracy
+- Precision
+- Recall
+- F1 score
+- Confusion matrix
+
+Because this is a commercial analytics project, the evaluation also includes business-focused targeting metrics:
+
+- Top-decile lift
+- Precision at top 10%
+- Precision at top 20%
+- Cumulative gain
+- Response rate by propensity group
+
+These metrics help determine whether the model can improve campaign targeting and outreach prioritization. The goal is not only to predict campaign response accurately, but also to identify which customers should be prioritized when marketing or sales resources are limited.
+
+The commercial evaluation answers practical business questions such as:
+
+| Business Question | Evaluation Output |
+|---|---|
+| How well does the model distinguish responders from non-responders? | ROC-AUC |
+| How accurate are the model classifications? | Accuracy, precision, recall, and F1 score |
+| How many correct and incorrect predictions are made? | Confusion matrix |
+| Are the highest-scored customers more likely to respond? | Precision at top 10% and top 20% |
+| How much better is model-based targeting than random targeting? | Top-decile lift |
+| How many responders can be captured by targeting a smaller customer group? | Cumulative gain |
+| Which customer groups should receive outreach priority? | Response rate by propensity group |
+
+This evaluation connects machine learning performance directly to commercial decision-making. It shows whether the model can help a business rank customers, prioritize outreach, and allocate campaign resources more efficiently.
+
+
 
 
 ## Target Variable
