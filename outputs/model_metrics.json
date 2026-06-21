@@ -1,0 +1,26 @@
+[
+    {
+        "Metric":"ROC AUC",
+        "Value":0.0
+    },
+    {
+        "Metric":"Accuracy",
+        "Value":0.0
+    },
+    {
+        "Metric":"Precision",
+        "Value":0.0
+    },
+    {
+        "Metric":"Recall",
+        "Value":0.0
+    },
+    {
+        "Metric":"F1 Score",
+        "Value":0.0
+    },
+    {
+        "Metric":"Top Decile Lift",
+        "Value":8.8767
+    }
+]
