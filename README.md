@@ -73,6 +73,8 @@ This is a binary classification problem, but the business value comes from ranki
 9. Create commercial priority segments
 10. Generate next-best-action recommendations
 11. Apply business constraints and create a selected-customer list
+12. Add model explainability and feature-importance interpretation
+13. Create a Streamlit dashboard for business users
 
 ## Step 3: Data Understanding
 
@@ -181,6 +183,10 @@ After generating customer propensity scores, customers are grouped into commerci
 
 This segmentation step translates model scores into business-friendly categories that marketing and sales teams can use for campaign planning.
 
+The output file is saved as:
+
+`data/processed/customer_priority_segments.csv`
+
 ## Next-Best-Action Recommendations
 
 Each customer segment is mapped to a recommended commercial action.
@@ -198,6 +204,10 @@ The next-best-action output includes:
 - Predicted response probability
 - Commercial priority segment
 - Recommended outreach action
+
+The output file is saved as:
+
+`data/processed/next_best_action_recommendations.csv`
 
 This step helps convert predictive analytics into a practical action plan for commercial teams.
 
@@ -222,69 +232,11 @@ The final output is saved as:
 
 This makes the project more than a predictive model. It becomes a commercial analytics decision-support workflow that translates machine learning scores into an actionable campaign-targeting list.
 
-## Commercial Decision Focus
-
-This project focuses on commercial decision-making, not only model accuracy.
-
-The model output is used to answer:
-
-| Business Decision | Project Output |
-|---|---|
-| Who should be contacted first? | Ranked customer list |
-| Which customers are high priority? | Response probability segments |
-| What action should be taken for each segment? | Next-best-action recommendations |
-| How should outreach resources be allocated? | High, medium, low, and deprioritized groups |
-| Which customers fit within campaign capacity? | Selected top 5,000 customer list |
-| How can campaign efficiency improve? | Lift, gain, and constrained targeting analysis |
-| What factors drive response? | Feature importance and explainability |
-
-## Expected Business Impact
-
-The expected business impact is to help a company improve campaign targeting, reduce wasted outreach, increase response rates, and allocate marketing or sales resources more efficiently.
-
-Instead of treating all customers equally, the business can use predicted response probabilities to prioritize customers most likely to respond. This supports better commercial decision-making by helping teams focus outreach efforts on higher-potential opportunities.
-
-Expected benefits include:
-
-- Higher campaign response efficiency
-- Better use of sales and marketing resources
-- Reduced unnecessary customer contact
-- Lower customer-contact fatigue
-- Improved customer prioritization
-- More data-driven campaign planning
-- Clearer connection between machine learning outputs and business actions
-
-## Repository Structure
-
-```text
-commercial-campaign-response-prioritization/
-│
-├── README.md
-├── data/
-│   ├── raw/
-│   │   └── bank-additional-full.csv
-│   └── processed/
-│       ├── customer_propensity_scores.csv
-│       └── selected_top_5000_customers.csv
-│
-├── notebooks/
-│   ├── 01_business_problem_and_data_understanding.ipynb
-│   ├── 02_baseline_modeling.ipynb
-│   └── 10_next_best_action_recommendations.ipynb
-│
-├── reports/
-│   └── figures/
-│
-├── src/
-├── requirements.txt
-├── LICENSE
-└── .gitignore
-
 ## Model Explainability
 
-To support business trust and model governance, this project includes a feature importance analysis.
+To support business trust and model governance, this project includes a feature-importance analysis.
 
-The explainability step identifies which variables have the strongest influence on campaign response predictions. This helps commercial teams understand why certain customers receive higher response probabilities and higher outreach priority.
+The explainability step identifies which variables have the strongest influence on campaign-response predictions. This helps commercial teams understand why certain customers receive higher response probabilities and higher outreach priority.
 
 Key drivers may include:
 
@@ -307,3 +259,161 @@ A permutation importance method is used to measure how much each feature contrib
 This explainability layer makes the project more practical for commercial decision-making because the model is not treated as a black box. Instead, the business can see which customer and campaign factors are driving response predictions.
 
 Important dataset note: the UCI Bank Marketing Additional dataset does not include a `balance` variable. Therefore, balance is not used as a feature in this version of the project.
+
+## Streamlit Dashboard
+
+This project includes a Streamlit dashboard that translates machine learning outputs into business-facing campaign insights.
+
+The dashboard includes:
+
+- Overall campaign response rate
+- Model performance metrics
+- Customer priority distribution
+- Lift by decile
+- Top predictive features
+- Next-best-action recommendation table
+- Downloadable customer-priority file
+
+### Run the Dashboard Locally
+
+From the project root folder, run:
+
+```bash
+streamlit run dashboard/app.py
+```
+
+The dashboard uses output files saved in the `data/processed/` and `reports/` folders, including customer-priority recommendations, model metrics, lift-by-decile results, and feature-importance results.
+
+If Streamlit is not installed yet, run:
+
+```bash
+pip install streamlit
+```
+
+Then run the dashboard again:
+
+```bash
+streamlit run dashboard/app.py
+```
+
+## Commercial Decision Focus
+
+This project focuses on commercial decision-making, not only model accuracy.
+
+The model output is used to answer:
+
+| Business Decision | Project Output |
+|---|---|
+| Who should be contacted first? | Ranked customer list |
+| Which customers are high priority? | Response probability segments |
+| What action should be taken for each segment? | Next-best-action recommendations |
+| How should outreach resources be allocated? | High, medium, low, and deprioritized groups |
+| Which customers fit within campaign capacity? | Selected top 5,000 customer list |
+| How can campaign efficiency improve? | Lift, gain, and constrained targeting analysis |
+| What factors drive response? | Feature importance and explainability |
+| How can business users review results? | Streamlit dashboard |
+
+## Expected Business Impact
+
+The expected business impact is to help a company improve campaign targeting, reduce wasted outreach, increase response rates, and allocate marketing or sales resources more efficiently.
+
+Instead of treating all customers equally, the business can use predicted response probabilities to prioritize customers most likely to respond. This supports better commercial decision-making by helping teams focus outreach efforts on higher-potential opportunities.
+
+Expected benefits include:
+
+- Higher campaign response efficiency
+- Better use of sales and marketing resources
+- Reduced unnecessary customer contact
+- Lower customer-contact fatigue
+- Improved customer prioritization
+- More data-driven campaign planning
+- Clearer connection between machine learning outputs and business actions
+- More transparent model governance through explainability
+- Easier business review through an interactive dashboard
+
+## Repository Structure
+
+```text
+commercial-campaign-response-prioritization/
+│
+├── README.md
+├── data/
+│   ├── raw/
+│   │   └── bank-additional-full.csv
+│   └── processed/
+│       ├── baseline_customer_response_scores.csv
+│       ├── customer_propensity_scores.csv
+│       ├── customer_priority_segments.csv
+│       ├── feature_importance.csv
+│       ├── feature_importance_business_interpretation.csv
+│       ├── next_best_action_recommendations.csv
+│       └── selected_top_5000_customers.csv
+│
+├── dashboard/
+│   └── app.py
+│
+├── notebooks/
+│   ├── 01_business_problem_and_data_understanding.ipynb
+│   ├── 02_baseline_modeling.ipynb
+│   └── 10_next_best_action_recommendations.ipynb
+│
+├── reports/
+│   └── figures/
+│       └── feature_importance.png
+│
+├── src/
+├── requirements.txt
+├── LICENSE
+└── .gitignore
+```
+
+## Requirements
+
+The main Python packages used in this project include:
+
+- pandas
+- numpy
+- scikit-learn
+- matplotlib
+- seaborn
+- jupyter
+- notebook
+- streamlit
+
+Install the requirements with:
+
+```bash
+pip install -r requirements.txt
+```
+
+## How to Run the Project
+
+1. Clone or download the repository.
+2. Install the required Python packages.
+3. Open the notebooks in the `notebooks/` folder.
+4. Run the notebooks in order.
+5. Review the processed outputs in `data/processed/`.
+6. Review visual outputs in `reports/figures/`.
+7. Launch the Streamlit dashboard.
+
+Run the dashboard with:
+
+```bash
+streamlit run dashboard/app.py
+```
+
+## Final Project Output
+
+The final project produces:
+
+- A real-data commercial analytics workflow
+- Baseline machine learning models
+- Model performance evaluation
+- Customer propensity scores
+- Commercial priority segments
+- Next-best-action recommendations
+- A constrained top-5,000 customer outreach list
+- Feature-importance and business interpretation outputs
+- A Streamlit dashboard for business-facing review
+
+This project demonstrates how machine learning can be used not only for prediction, but also for commercial prioritization, resource allocation, model explainability, and business decision support.
