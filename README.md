@@ -1,193 +1,168 @@
-# Commercial Campaign Response Prediction and Outreach Prioritization
+﻿# Commercial Campaign Response Prediction and Outreach Prioritization
 
 ## Business Problem
 
-Commercial teams often run marketing campaigns using email, phone calls, direct mail, digital ads, or sales representative outreach. However, outreach resources are limited. Contacting every customer equally can waste budget, reduce conversion efficiency, and increase customer fatigue.
+Commercial teams often run marketing campaigns through email, phone calls, direct mail, digital ads, or sales representative outreach. However, outreach resources are limited. Contacting every customer with the same level of effort can waste budget, reduce conversion efficiency, and increase customer fatigue.
 
-The main business question of this project is:
+The core business question of this project is:
 
 **Which customers are most likely to respond to a commercial campaign, and how should the business prioritize outreach actions?**
 
-This project uses customer and campaign data to predict the probability that each customer will respond to a campaign. The goal is not only to build an accurate machine learning model, but also to translate model outputs into commercial decisions such as customer ranking, outreach prioritization, and campaign resource allocation.
+This project uses customer and campaign data to predict customer campaign response probability and translate those predictions into practical business actions, including customer ranking, outreach prioritization, and next-best-action recommendations.
+
+---
 
 ## Business Objective
 
-The objective is to build a decision-support analytics framework that helps a business:
+The objective is to build a commercial analytics decision-support framework that helps a business:
 
 - Identify customers with the highest likelihood of campaign response
 - Rank customers by predicted response probability
-- Segment customers into high, medium, and low outreach priority groups
+- Segment customers into high, medium, low, and deprioritized outreach groups
 - Recommend next-best commercial actions
-- Apply campaign-capacity constraints
-- Improve campaign efficiency by focusing resources on higher-value opportunities
-- Support marketing and sales teams with actionable recommendations
+- Improve campaign efficiency by focusing resources on higher-propensity customers
+- Support sales and marketing teams with actionable recommendations
 
-## Dataset
+---
 
-This project uses the UCI Bank Marketing Dataset, a real-world dataset related to direct marketing campaigns conducted by a Portuguese banking institution.
+## Dataset Description
 
-The dataset contains customer demographic information, previous campaign information, contact history, and economic context variables. The main objective is to predict whether a customer subscribed to a term deposit after a marketing campaign.
+This project uses the **UCI Bank Marketing Dataset**, a real-world dataset related to direct marketing campaigns conducted by a Portuguese banking institution.
 
-### Dataset Source
-
-| Item | Description |
-|---|---|
-| Source | UCI Machine Learning Repository |
-| Dataset | Bank Marketing Dataset |
-| Selected file | bank-additional-full.csv |
-| Number of records | 41,188 |
-| Target variable | y |
-
-### Dataset Citation
-
-Moro, S., Rita, P., & Cortez, P. (2014). *Bank Marketing* [Dataset]. UCI Machine Learning Repository. https://doi.org/10.24432/C5K306
-
-## Target Variable
+The dataset contains customer demographic information, campaign contact information, previous campaign history, and economic context variables.
 
 The target variable is:
 
-**y = whether the customer subscribed to a term deposit**
+```text
+y = whether the customer subscribed to a term deposit
+```
 
-This project treats `y` as the campaign-response outcome:
+For this project, the target variable is interpreted as a campaign-response outcome:
 
 - `yes` = customer responded positively to the campaign
 - `no` = customer did not respond positively to the campaign
 
-For modeling, this target is converted into a binary response variable:
+Although the original dataset is from a banking campaign, the workflow is applicable to broader commercial analytics problems such as lead scoring, customer prioritization, marketing targeting, and sales outreach optimization.
 
-- `1` = subscribed / positive response
-- `0` = not subscribed / negative response
+---
 
-This is a binary classification problem, but the business value comes from ranking customers and prioritizing outreach actions.
+## Why `duration` Was Removed
 
-## Project Workflow
+The original dataset includes a variable named `duration`, which measures the length of the customer contact.
 
-1. Define the business problem
-2. Select and document a real dataset
-3. Load and understand the dataset
-4. Clean and prepare the data
-5. Perform exploratory data analysis
-6. Build baseline machine learning models
+This variable was removed from the predictive modeling process because it creates **target leakage**.
+
+In a real campaign setting, the business must score customers before contacting them. At that point, call duration is not yet known. Including `duration` would allow the model to use information that becomes available only after the campaign interaction has occurred.
+
+Keeping `duration` would likely inflate model performance and make the results unrealistic for real-world campaign planning.
+
+Therefore, `duration` was excluded so the model better reflects a realistic pre-campaign scoring workflow.
+
+---
+
+## Modeling Approach
+
+The project follows a structured machine learning workflow:
+
+1. Load the campaign dataset
+2. Preprocess numerical and categorical variables
+3. Remove leakage-prone variables such as `duration`
+4. Encode categorical variables
+5. Split the data into training and testing sets
+6. Train baseline and machine learning models
 7. Evaluate model performance
-8. Generate customer propensity scores
-9. Create commercial priority segments
+8. Generate customer-level propensity scores
+9. Convert scores into commercial priority segments
 10. Generate next-best-action recommendations
-11. Apply business constraints and create a selected-customer list
-12. Add model explainability and feature-importance interpretation
-13. Create a Streamlit dashboard for business users
+11. Save business-facing outputs
+12. Present results in a Streamlit dashboard
 
-## Step 3: Data Understanding
-
-After loading the UCI Bank Marketing Dataset, the project performs an initial data understanding analysis to connect the raw data to the commercial campaign objective.
-
-This step examines:
-
-- Number of customer records
-- Overall campaign response rate
-- Numerical and categorical variables
-- Missing and `unknown` values
-- Campaign-related variables
-- Previous campaign outcomes
-- Response differences across customer groups
-- Response differences across contact types
-- Relationship between repeated contacts and customer response
-
-The main business goal of this step is to understand which customer and campaign characteristics are associated with higher response rates before building predictive models.
-
-## Baseline Modeling
-
-This project trains three baseline machine learning models to predict customer campaign response:
+The modeling approach includes:
 
 | Model | Purpose |
 |---|---|
 | Logistic Regression | Interpretable baseline model |
-| Random Forest | Nonlinear model for complex customer behavior |
+| Random Forest | Nonlinear model for customer response patterns |
 | Gradient Boosting | Strong predictive model for campaign response prediction |
 
-The models are first trained as baseline classifiers and then evaluated using both machine learning metrics and commercial targeting metrics.
+The final model is selected based on predictive performance, business usefulness, and ability to support customer ranking.
 
-Because campaign response is an imbalanced classification problem, the project emphasizes ranking-oriented and business-focused evaluation rather than accuracy alone. Metrics such as ROC-AUC, lift, cumulative gain, and precision at top customer segments are especially useful for prioritizing outreach.
+---
 
-The recommended final model candidate is selected based on predictive performance and business usefulness. In this type of commercial analytics problem, Random Forest or Gradient Boosting is usually preferred because they can capture nonlinear response patterns.
+## Evaluation Metrics
 
-### Modeling Note
-
-The `duration` variable is excluded from predictive modeling because it is only known after a customer contact occurs. Including this variable would create data leakage and would not reflect a realistic pre-campaign scoring scenario. The model is designed to support outreach prioritization before the campaign action is taken.
-
-## Model Performance Evaluation
-
-The trained models are evaluated using both standard machine learning metrics and commercial analytics metrics.
+The model is evaluated using both standard machine learning metrics and business-focused campaign metrics.
 
 Standard model evaluation metrics include:
 
-- ROC-AUC
 - Accuracy
 - Precision
 - Recall
-- F1 score
+- F1-score
+- ROC-AUC
 - Confusion matrix
 
-Because this is a commercial analytics project, the evaluation also includes business-focused targeting metrics:
+Because campaign response problems are often imbalanced, accuracy alone is not sufficient. Ranking quality is especially important because the business goal is to identify which customers should be contacted first.
 
-- Top-decile lift
-- Precision at top 10%
-- Precision at top 20%
-- Cumulative gain
-- Response rate by propensity group
+ROC-AUC is used to evaluate how well the model separates likely responders from likely non-responders across different probability thresholds.
 
-These metrics help determine whether the model can improve campaign targeting and outreach prioritization. The goal is not only to predict campaign response accurately, but also to identify which customers should be prioritized when marketing or sales resources are limited.
+---
 
-The commercial evaluation answers practical business questions such as:
+## Lift Analysis
 
-| Business Question | Evaluation Output |
-|---|---|
-| How well does the model distinguish responders from non-responders? | ROC-AUC |
-| How accurate are the model classifications? | Accuracy, precision, recall, and F1 score |
-| How many correct and incorrect predictions are made? | Confusion matrix |
-| Are the highest-scored customers more likely to respond? | Precision at top 10% and top 20% |
-| How much better is model-based targeting than random targeting? | Top-decile lift |
-| How many responders can be captured by targeting a smaller customer group? | Cumulative gain |
-| Which customer groups should receive outreach priority? | Response rate by propensity group |
+Lift analysis evaluates whether the model improves campaign targeting compared with random customer selection.
 
-This evaluation connects machine learning performance directly to commercial decision-making. It shows whether the model can help a business rank customers, prioritize outreach, and allocate campaign resources more efficiently.
+Customers are sorted by predicted response probability and divided into deciles. The response rate in each decile is compared with the overall campaign response rate.
 
-## Customer Propensity Scoring
+Lift analysis helps answer practical business questions such as:
 
-The final selected model is used to generate a predicted response probability for each customer.
+- Are the highest-scored customers more likely to respond?
+- How much better is the top customer group compared with the average customer?
+- Can the business improve campaign efficiency by focusing on top-ranked customers?
 
-This predicted probability represents the likelihood that a customer will respond positively to the campaign. Customers are then sorted from highest to lowest predicted probability to create a ranked outreach list.
+A strong lift in the top deciles indicates that the model can help prioritize outreach more effectively.
 
-The output file is saved as:
+---
 
-`data/processed/customer_propensity_scores.csv`
+## Customer Propensity Scores
 
-The propensity score output includes:
+The model generates a predicted response probability for each customer.
 
-- Customer ID
-- Predicted response probability
-- Actual response outcome
-- Customer rank
+Example:
 
-This step converts the machine learning model into a practical commercial decision-support tool by helping the business prioritize customers with the highest likelihood of campaign response.
+| Customer ID | Propensity Score |
+|---:|---:|
+| 10452 | 0.84 |
+| 20931 | 0.55 |
+| 35120 | 0.27 |
+| 18411 | 0.08 |
+
+These scores represent the estimated likelihood that each customer will respond positively to the campaign.
+
+The output is saved as:
+
+```text
+outputs/customer_propensity_scores.csv
+```
+
+---
 
 ## Commercial Priority Segmentation
 
-After generating customer propensity scores, customers are grouped into commercial priority segments based on predicted response probability.
+Propensity scores are converted into business-friendly customer segments.
 
 | Propensity Score | Segment | Business Meaning |
-|---|---|---|
-| Greater than or equal to 0.70 | High Priority | Strong candidate for immediate outreach |
+|---:|---|---|
+| 0.70 and above | High Priority | Strong candidate for immediate outreach |
 | 0.40 to 0.69 | Medium Priority | Good candidate for targeted follow-up |
-| 0.20 to 0.39 | Low Priority | Use low-cost nurture campaign |
-| Less than 0.20 | Deprioritized | Do not prioritize now |
+| 0.20 to 0.39 | Low Priority | Suitable for low-cost nurture campaign |
+| Below 0.20 | Deprioritized | Do not prioritize in the current campaign |
 
-This segmentation step translates model scores into business-friendly categories that marketing and sales teams can use for campaign planning.
+This segmentation makes the model output easier for business users to interpret and apply.
 
-The output file is saved as:
+---
 
-`data/processed/customer_priority_segments.csv`
-
-## Next-Best-Action Recommendations
+## Next-Best-Action Logic
 
 Each customer segment is mapped to a recommended commercial action.
 
@@ -198,47 +173,30 @@ Each customer segment is mapped to a recommended commercial action.
 | Low Priority | Low-cost nurture campaign |
 | Deprioritized | Exclude from current campaign |
 
-The next-best-action output includes:
+Example output:
 
-- Customer ID
-- Predicted response probability
-- Commercial priority segment
-- Recommended outreach action
+| Customer ID | Probability | Segment | Next Best Action |
+|---:|---:|---|---|
+| 10452 | 0.84 | High Priority | Priority sales outreach |
+| 20931 | 0.55 | Medium Priority | Targeted marketing follow-up |
+| 35120 | 0.27 | Low Priority | Low-cost nurture campaign |
+| 18411 | 0.08 | Deprioritized | Exclude from current campaign |
 
-The output file is saved as:
+The output is saved as:
 
-`data/processed/next_best_action_recommendations.csv`
+```text
+outputs/next_best_actions.csv
+```
 
-This step helps convert predictive analytics into a practical action plan for commercial teams.
+This step converts machine learning predictions into operational recommendations for marketing and sales teams.
 
-## Business Constraint and Campaign Selection
+---
 
-To make the project more realistic, a business constraint was added:
+## Explainability
 
-**The campaign team can contact only the top 5,000 customers.**
+The project includes feature importance analysis to identify which variables contribute most to campaign response prediction.
 
-The final selected-customer list is created by applying practical commercial rules:
-
-- Rank customers by predicted campaign-response probability
-- Remove customers with excessive prior campaign contacts
-- Remove customers with contact-fatigue risk
-- Prioritize customers with higher expected business value
-
-Because the UCI Bank Marketing Dataset does not include actual revenue or profit, expected business value is represented using a simple proxy based on predicted response probability and contact-efficiency rules.
-
-The final output is saved as:
-
-`data/processed/selected_top_5000_customers.csv`
-
-This makes the project more than a predictive model. It becomes a commercial analytics decision-support workflow that translates machine learning scores into an actionable campaign-targeting list.
-
-## Model Explainability
-
-To support business trust and model governance, this project includes a feature-importance analysis.
-
-The explainability step identifies which variables have the strongest influence on campaign-response predictions. This helps commercial teams understand why certain customers receive higher response probabilities and higher outreach priority.
-
-Key drivers may include:
+Important drivers may include:
 
 - Previous campaign outcome
 - Contact type
@@ -247,125 +205,90 @@ Key drivers may include:
 - Age
 - Number of campaign contacts
 - Prior contact history
-- Days since previous contact
 - Campaign timing
+- Economic context variables
 
-A permutation importance method is used to measure how much each feature contributes to predictive performance. The final outputs are saved as:
+Explainability is important because commercial teams need to understand why certain customers are prioritized. It also supports model governance, business trust, and responsible use of predictive analytics.
 
-- `data/processed/feature_importance.csv`
-- `data/processed/feature_importance_business_interpretation.csv`
-- `reports/figures/feature_importance.png`
-
-This explainability layer makes the project more practical for commercial decision-making because the model is not treated as a black box. Instead, the business can see which customer and campaign factors are driving response predictions.
-
-Important dataset note: the UCI Bank Marketing Additional dataset does not include a `balance` variable. Therefore, balance is not used as a feature in this version of the project.
-
-## Streamlit Dashboard
-
-This project includes a Streamlit dashboard that translates machine learning outputs into business-facing campaign insights.
-
-The dashboard includes:
-
-- Overall campaign response rate
-- Model performance metrics
-- Customer priority distribution
-- Lift by decile
-- Top predictive features
-- Next-best-action recommendation table
-- Downloadable customer-priority file
-
-### Run the Dashboard Locally
-
-From the project root folder, run:
-
-```bash
-streamlit run dashboard/app.py
-```
-
-The dashboard uses output files saved in the `data/processed/` and `reports/` folders, including customer-priority recommendations, model metrics, lift-by-decile results, and feature-importance results.
-
-If Streamlit is not installed yet, run:
-
-```bash
-pip install streamlit
-```
-
-Then run the dashboard again:
-
-```bash
-streamlit run dashboard/app.py
-```
-
-## Commercial Decision Focus
-
-This project focuses on commercial decision-making, not only model accuracy.
-
-The model output is used to answer:
-
-| Business Decision | Project Output |
-|---|---|
-| Who should be contacted first? | Ranked customer list |
-| Which customers are high priority? | Response probability segments |
-| What action should be taken for each segment? | Next-best-action recommendations |
-| How should outreach resources be allocated? | High, medium, low, and deprioritized groups |
-| Which customers fit within campaign capacity? | Selected top 5,000 customer list |
-| How can campaign efficiency improve? | Lift, gain, and constrained targeting analysis |
-| What factors drive response? | Feature importance and explainability |
-| How can business users review results? | Streamlit dashboard |
-
-## Expected Business Impact
-
-The expected business impact is to help a company improve campaign targeting, reduce wasted outreach, increase response rates, and allocate marketing or sales resources more efficiently.
-
-Instead of treating all customers equally, the business can use predicted response probabilities to prioritize customers most likely to respond. This supports better commercial decision-making by helping teams focus outreach efforts on higher-potential opportunities.
-
-Expected benefits include:
-
-- Higher campaign response efficiency
-- Better use of sales and marketing resources
-- Reduced unnecessary customer contact
-- Lower customer-contact fatigue
-- Improved customer prioritization
-- More data-driven campaign planning
-- Clearer connection between machine learning outputs and business actions
-- More transparent model governance through explainability
-- Easier business review through an interactive dashboard
-
-## Repository Structure
+The feature importance output is saved as:
 
 ```text
-commercial-campaign-response-prioritization/
+outputs/feature_importance.csv
+```
+
+Important dataset note: the UCI Bank Marketing Additional dataset does not include a `balance` variable. Therefore, balance is not used as a feature in this project version.
+
+---
+
+## Business Value
+
+This project demonstrates how machine learning can improve commercial campaign execution.
+
+Potential business value includes:
+
+- Better customer targeting
+- Higher campaign response efficiency
+- More efficient sales and marketing resource allocation
+- Reduced unnecessary customer contact
+- Improved campaign return on investment
+- More transparent decision-making through explainable model outputs
+- Actionable customer-level recommendations instead of only technical model metrics
+
+The main value of the project is not only predicting campaign response, but also converting predictions into clear business actions.
+
+---
+
+## Responsible AI Note
+
+This project is intended as a decision-support tool, not a fully automated decision-making system.
+
+Responsible AI considerations include:
+
+- Removing leakage-prone variables such as `duration`
+- Evaluating model performance beyond accuracy
+- Reviewing feature importance for business reasonableness
+- Avoiding over-reliance on sensitive or potentially unfair variables
+- Using predictions to support human decision-making
+- Monitoring model performance if applied to new campaign data
+- Ensuring that customer outreach strategies remain fair, transparent, and compliant with relevant business policies
+
+The model should be reviewed by business, analytics, and governance stakeholders before any real-world deployment.
+
+---
+
+## Project Structure
+
+```text
+commercial-analytics-campaign-ai/
 │
-├── README.md
 ├── data/
-│   ├── raw/
-│   │   └── bank-additional-full.csv
-│   └── processed/
-│       ├── baseline_customer_response_scores.csv
-│       ├── customer_propensity_scores.csv
-│       ├── customer_priority_segments.csv
-│       ├── feature_importance.csv
-│       ├── feature_importance_business_interpretation.csv
-│       ├── next_best_action_recommendations.csv
-│       └── selected_top_5000_customers.csv
-│
-├── dashboard/
-│   └── app.py
+│   └── README.md
 │
 ├── notebooks/
-│   ├── 01_business_problem_and_data_understanding.ipynb
-│   ├── 02_baseline_modeling.ipynb
-│   └── 10_next_best_action_recommendations.ipynb
-│
-├── reports/
-│   └── figures/
-│       └── feature_importance.png
+│   └── commercial_campaign_eda.ipynb
 │
 ├── src/
+│   ├── load_data.py
+│   ├── preprocess_data.py
+│   ├── train_model.py
+│   ├── score_customers.py
+│   └── generate_next_best_action.py
+│
+├── outputs/
+│   ├── model_metrics.json
+│   ├── feature_importance.csv
+│   ├── customer_propensity_scores.csv
+│   └── next_best_actions.csv
+│
+├── app/
+│   └── streamlit_app.py
+│
+├── README.md
 ├── requirements.txt
-├── LICENSE
 └── .gitignore
 ```
+
+---
 
 ## Requirements
 
@@ -386,34 +309,85 @@ Install the requirements with:
 pip install -r requirements.txt
 ```
 
+---
+
 ## How to Run the Project
 
-1. Clone or download the repository.
-2. Install the required Python packages.
-3. Open the notebooks in the `notebooks/` folder.
-4. Run the notebooks in order.
-5. Review the processed outputs in `data/processed/`.
-6. Review visual outputs in `reports/figures/`.
-7. Launch the Streamlit dashboard.
+Run the following commands from the project root folder.
+
+### 1. Install required packages
+
+```bash
+pip install -r requirements.txt
+```
+
+### 2. Run the project scripts
+
+```bash
+python src/load_data.py
+python src/preprocess_data.py
+python src/train_model.py
+python src/score_customers.py
+python src/generate_next_best_action.py
+```
+
+These scripts generate the main output files in the `outputs/` folder.
+
+### 3. Run the Streamlit dashboard
+
+```bash
+streamlit run app/streamlit_app.py
+```
+
+---
+
+## Example Outputs
+
+The project generates the following output files:
+
+| Output File | Description |
+|---|---|
+| `outputs/model_metrics.json` | Model performance metrics |
+| `outputs/feature_importance.csv` | Top predictive features |
+| `outputs/customer_propensity_scores.csv` | Customer-level response probabilities |
+| `outputs/next_best_actions.csv` | Customer priority segments and recommended actions |
+
+---
+
+## Streamlit Dashboard
+
+The project includes a Streamlit dashboard that translates machine learning outputs into business-facing campaign insights.
+
+The dashboard includes:
+
+- Overall campaign response rate
+- Model performance metrics
+- Customer priority distribution
+- Lift analysis
+- Top predictive features
+- Next-best-action recommendation table
+- Downloadable customer-priority output
 
 Run the dashboard with:
 
 ```bash
-streamlit run dashboard/app.py
+streamlit run app/streamlit_app.py
 ```
+
+---
 
 ## Final Project Output
 
 The final project produces:
 
 - A real-data commercial analytics workflow
-- Baseline machine learning models
+- Machine learning models for campaign response prediction
 - Model performance evaluation
+- Lift analysis
 - Customer propensity scores
 - Commercial priority segments
 - Next-best-action recommendations
-- A constrained top-5,000 customer outreach list
-- Feature-importance and business interpretation outputs
+- Feature importance and explainability outputs
 - A Streamlit dashboard for business-facing review
 
 This project demonstrates how machine learning can be used not only for prediction, but also for commercial prioritization, resource allocation, model explainability, and business decision support.
