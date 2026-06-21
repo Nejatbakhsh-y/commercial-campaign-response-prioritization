@@ -101,7 +101,7 @@ This project trains three baseline machine learning models to predict customer c
 
 The models are first trained as baseline classifiers and then evaluated in Step 7 using both machine learning metrics and commercial targeting metrics.
 
-Because campaign response is an imbalanced classification problem, the project emphasizes ROC AUC and PR AUC rather than accuracy alone. These metrics are more useful for ranking customers by likelihood of response and supporting commercial outreach prioritization.
+Because campaign response is an imbalanced classification problem, the project emphasizes ranking-oriented and business-focused evaluation rather than accuracy alone. Metrics such as ROC-AUC, lift, cumulative gain, and precision at top customer segments are especially useful for prioritizing outreach.
 
 The recommended final model candidate is selected based on predictive performance and business usefulness. In this type of commercial analytics problem, Random Forest or Gradient Boosting is usually preferred because they can capture nonlinear response patterns.
 
