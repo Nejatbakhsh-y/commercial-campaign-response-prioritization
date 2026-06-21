@@ -1,14 +1,14 @@
-﻿# Commercial Campaign Response Prediction and Outreach Prioritization
+﻿# Commercial Analytics AI: Campaign Propensity, Lift Analysis, and Next-Best-Action Prioritization
 
 ## Business Problem
 
-Commercial teams often run marketing campaigns through email, phone calls, direct mail, digital ads, or sales representative outreach. However, outreach resources are limited. Contacting every customer with the same level of effort can waste budget, reduce conversion efficiency, and increase customer fatigue.
+Commercial teams often run marketing campaigns through email, phone calls, direct mail, digital outreach, or sales representative follow-up. However, outreach resources are limited. Contacting every customer with the same level of effort can waste budget, reduce conversion efficiency, and increase customer fatigue.
 
 The core business question of this project is:
 
 **Which customers are most likely to respond to a commercial campaign, and how should the business prioritize outreach actions?**
 
-This project uses customer and campaign data to predict customer campaign response probability and translate those predictions into practical business actions, including customer ranking, outreach prioritization, and next-best-action recommendations.
+This project uses real campaign-response data to predict customer response probability, rank customers by commercial propensity, evaluate lift, and translate model outputs into practical next-best-action recommendations for sales and marketing decision support.
 
 ---
 
@@ -19,9 +19,12 @@ The objective is to build a commercial analytics decision-support framework that
 - Identify customers with the highest likelihood of campaign response
 - Rank customers by predicted response probability
 - Segment customers into high, medium, low, and deprioritized outreach groups
-- Recommend next-best commercial actions
+- Evaluate how much the model improves targeting compared with random selection
+- Recommend next-best commercial actions based on propensity segments
 - Improve campaign efficiency by focusing resources on higher-propensity customers
 - Support sales and marketing teams with actionable recommendations
+
+This project is designed as a commercial analytics AI prototype rather than a standard classification notebook. It connects predictive modeling with customer prioritization, lift analysis, and business-facing decision support.
 
 ---
 
@@ -42,7 +45,7 @@ For this project, the target variable is interpreted as a campaign-response outc
 - `yes` = customer responded positively to the campaign
 - `no` = customer did not respond positively to the campaign
 
-Although the original dataset is from a banking campaign, the workflow is applicable to broader commercial analytics problems such as lead scoring, customer prioritization, marketing targeting, and sales outreach optimization.
+Although the original dataset is from a banking campaign, the workflow is applicable to broader commercial analytics problems such as lead scoring, customer prioritization, marketing targeting, sales outreach optimization, and campaign resource allocation.
 
 ---
 
@@ -73,9 +76,10 @@ The project follows a structured machine learning workflow:
 7. Evaluate model performance
 8. Generate customer-level propensity scores
 9. Convert scores into commercial priority segments
-10. Generate next-best-action recommendations
-11. Save business-facing outputs
-12. Present results in a Streamlit dashboard
+10. Calculate lift by decile
+11. Generate next-best-action recommendations
+12. Save business-facing outputs
+13. Present results in a Streamlit dashboard
 
 The modeling approach includes:
 
@@ -85,7 +89,7 @@ The modeling approach includes:
 | Random Forest | Nonlinear model for customer response patterns |
 | Gradient Boosting | Strong predictive model for campaign response prediction |
 
-The final model is selected based on predictive performance, business usefulness, and ability to support customer ranking.
+The final model is selected based on predictive performance, ranking quality, and business usefulness.
 
 ---
 
@@ -108,6 +112,34 @@ ROC-AUC is used to evaluate how well the model separates likely responders from 
 
 ---
 
+## Example Model Performance
+
+The training script automatically generates model metrics and saves them to:
+
+```text
+outputs/model_metrics.json
+```
+
+Example model output:
+
+```json
+{
+  "model_name": "Gradient Boosting Classifier",
+  "accuracy": 0.9011,
+  "precision": 0.6728,
+  "recall": 0.2371,
+  "f1_score": 0.3506,
+  "roc_auc": 0.8091,
+  "training_records": 32950,
+  "test_records": 8238,
+  "target_response_rate": 0.1127
+}
+```
+
+For this project, ROC-AUC and lift analysis are especially important because the business goal is to rank customers by likelihood of response, not only to classify customers as responders or non-responders.
+
+---
+
 ## Lift Analysis
 
 Lift analysis evaluates whether the model improves campaign targeting compared with random customer selection.
@@ -119,8 +151,15 @@ Lift analysis helps answer practical business questions such as:
 - Are the highest-scored customers more likely to respond?
 - How much better is the top customer group compared with the average customer?
 - Can the business improve campaign efficiency by focusing on top-ranked customers?
+- Which customer groups should be prioritized when outreach capacity is limited?
 
 A strong lift in the top deciles indicates that the model can help prioritize outreach more effectively.
+
+The lift analysis output is saved as:
+
+```text
+outputs/lift_by_decile.csv
+```
 
 ---
 
@@ -139,7 +178,7 @@ Example:
 
 These scores represent the estimated likelihood that each customer will respond positively to the campaign.
 
-The output is saved as:
+The customer propensity score output is saved as:
 
 ```text
 outputs/customer_propensity_scores.csv
@@ -182,7 +221,7 @@ Example output:
 | 35120 | 0.27 | Low Priority | Low-cost nurture campaign |
 | 18411 | 0.08 | Deprioritized | Exclude from current campaign |
 
-The output is saved as:
+The next-best-action output is saved as:
 
 ```text
 outputs/next_best_actions.csv
@@ -220,6 +259,40 @@ Important dataset note: the UCI Bank Marketing Additional dataset does not inclu
 
 ---
 
+## Project Outputs
+
+This project produces five main analytical outputs:
+
+| Output File | Description |
+|---|---|
+| `outputs/model_metrics.json` | Model performance metrics including accuracy, precision, recall, F1 score, ROC-AUC, training records, test records, and target response rate |
+| `outputs/customer_propensity_scores.csv` | Customer-level predicted response probabilities and priority segments |
+| `outputs/lift_by_decile.csv` | Lift analysis showing how effectively the model ranks high-response customers |
+| `outputs/next_best_actions.csv` | Recommended outreach action for each customer based on propensity segment |
+| `outputs/feature_importance.csv` | Top predictive features driving campaign response |
+
+These outputs make the project title accurate:
+
+**Campaign Propensity** is represented by `customer_propensity_scores.csv`.
+
+**Lift Analysis** is represented by `lift_by_decile.csv`.
+
+**Next-Best-Action Prioritization** is represented by `next_best_actions.csv`.
+
+**Explainability** is represented by `feature_importance.csv`.
+
+**Model Evaluation** is represented by `model_metrics.json`.
+
+The project may also generate an additional supporting file:
+
+```text
+outputs/model_performance_metrics.csv
+```
+
+This file is a supplemental tabular version of model performance results.
+
+---
+
 ## Business Value
 
 This project demonstrates how machine learning can improve commercial campaign execution.
@@ -231,6 +304,7 @@ Potential business value includes:
 - More efficient sales and marketing resource allocation
 - Reduced unnecessary customer contact
 - Improved campaign return on investment
+- Stronger prioritization of high-propensity customers
 - More transparent decision-making through explainable model outputs
 - Actionable customer-level recommendations instead of only technical model metrics
 
@@ -276,9 +350,11 @@ commercial-analytics-campaign-ai/
 │
 ├── outputs/
 │   ├── model_metrics.json
-│   ├── feature_importance.csv
+│   ├── model_performance_metrics.csv
 │   ├── customer_propensity_scores.csv
-│   └── next_best_actions.csv
+│   ├── lift_by_decile.csv
+│   ├── next_best_actions.csv
+│   └── feature_importance.csv
 │
 ├── app/
 │   └── streamlit_app.py
@@ -317,40 +393,43 @@ Run the following commands from the project root folder.
 
 ### 1. Install required packages
 
-```bash
+```powershell
 pip install -r requirements.txt
 ```
 
 ### 2. Run the project scripts
 
-```bash
-python src/load_data.py
-python src/preprocess_data.py
-python src/train_model.py
-python src/score_customers.py
-python src/generate_next_best_action.py
+```powershell
+python .\src\load_data.py
+python .\src\preprocess_data.py
+python .\src\train_model.py
+python .\src\score_customers.py
+python .\src\generate_next_best_action.py
 ```
 
 These scripts generate the main output files in the `outputs/` folder.
 
-### 3. Run the Streamlit dashboard
+### 3. Verify project outputs
 
-```bash
-streamlit run app/streamlit_app.py
+```powershell
+Get-ChildItem outputs
 ```
 
----
+You should see the following main files:
 
-## Example Outputs
+```text
+customer_propensity_scores.csv
+lift_by_decile.csv
+next_best_actions.csv
+feature_importance.csv
+model_metrics.json
+```
 
-The project generates the following output files:
+### 4. Run the Streamlit dashboard
 
-| Output File | Description |
-|---|---|
-| `outputs/model_metrics.json` | Model performance metrics |
-| `outputs/feature_importance.csv` | Top predictive features |
-| `outputs/customer_propensity_scores.csv` | Customer-level response probabilities |
-| `outputs/next_best_actions.csv` | Customer priority segments and recommended actions |
+```powershell
+streamlit run app/streamlit_app.py
+```
 
 ---
 
@@ -363,14 +442,14 @@ The dashboard includes:
 - Overall campaign response rate
 - Model performance metrics
 - Customer priority distribution
-- Lift analysis
+- Lift analysis by decile
 - Top predictive features
 - Next-best-action recommendation table
 - Downloadable customer-priority output
 
 Run the dashboard with:
 
-```bash
+```powershell
 streamlit run app/streamlit_app.py
 ```
 
@@ -383,11 +462,17 @@ The final project produces:
 - A real-data commercial analytics workflow
 - Machine learning models for campaign response prediction
 - Model performance evaluation
-- Lift analysis
 - Customer propensity scores
+- Lift analysis by decile
 - Commercial priority segments
 - Next-best-action recommendations
 - Feature importance and explainability outputs
 - A Streamlit dashboard for business-facing review
 
-This project demonstrates how machine learning can be used not only for prediction, but also for commercial prioritization, resource allocation, model explainability, and business decision support.
+This project demonstrates how machine learning can be used not only for prediction, but also for commercial prioritization, campaign lift analysis, resource allocation, model explainability, and business decision support.
+
+---
+
+## Suggested Resume Bullet
+
+Developed a real-data commercial analytics AI prototype using campaign-response data to predict customer propensity, evaluate lift, rank outreach priority, and generate next-best-action recommendations for sales and marketing decision support.
