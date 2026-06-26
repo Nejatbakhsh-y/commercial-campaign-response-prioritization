@@ -473,6 +473,6 @@ This project demonstrates how machine learning can be used not only for predicti
 
 ---
 
-## Suggested Resume Bullet
+## What I did!
 
 Developed a real-data commercial analytics AI prototype using campaign-response data to predict customer propensity, evaluate lift, rank outreach priority, and generate next-best-action recommendations for sales and marketing decision support.
